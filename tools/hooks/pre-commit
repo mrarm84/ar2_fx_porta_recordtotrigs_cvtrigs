@@ -1,0 +1,4 @@
+#!/bin/sh
+# Refuses a commit that would add firmware (see tools/package.py).
+# Enable once per clone: git config core.hooksPath tools/hooks
+exec python3 "$(git rev-parse --show-toplevel)/tools/package.py" --check --staged

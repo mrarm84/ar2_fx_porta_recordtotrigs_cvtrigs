@@ -1,0 +1,73 @@
+# Where each mod comes from. Read by tools/mod_readmes.py (each mod's README)
+# and tools/package.py (the source package's MODS list).
+#
+#   upstream  MrScruff's mod, as published in rytm-mods-src, unchanged here
+#   modified  MrScruff's mod, changed in this tree (what changed: `changes`)
+#   new       written for this tree (mrarm84)
+#
+# Upstream: https://github.com/Iced-Cream/rytm-mods-src (GPL-2.0), MrScruff's
+# Analog Rytm MKII mods, redistributed with permission. Compared file by file
+# against its main branch (cd4ded4), 2026-11-26.
+
+[upstream]
+author = "MrScruff"
+repo   = "https://github.com/Iced-Cream/rytm-mods-src"
+rev    = "cd4ded4"
+# Upstream mods this tree does not carry.
+not_included = [
+  "0003-velocity-humanise", "0006-comp-preview", "0008-filter-hz",
+  "0009-main-rms", "0012-slice-loop", "0017-ctrl-in-perf", "0018-scene-mutes",
+]
+
+[mods."0000-shared"]
+origin = "upstream"
+
+[mods."0002-euclid-accents"]
+origin = "upstream"
+
+[mods."0004-lfo-rnd"]
+origin  = "modified"
+changes = "SYN and SMP on LFO RND's knobs C and D; DS1, DS2, DP1 and DP2 no longer lockable (a held trig wrote a broken lock); hosts 0013's DEGRADE (G, H)"
+
+[mods."0010-kit-ab"]
+origin = "upstream"
+
+[mods."0013-voice-dac"]
+origin  = "modified"
+changes = "lite: DAC SUM only (per-track DAC FILTER, shaper and POL out of the audio interrupt); DEGRADE (SRD, BIT) per sound; portamento (GLD, TIM) for every machine, on the TRIG page with trig locks"
+
+[mods."0014-ctrl-all"]
+origin = "upstream"
+
+[mods."0015-env-reset-amp"]
+origin = "upstream"
+
+[mods."0019-reverb-srr"]
+origin = "new"
+
+[mods."0020-cv-trig"]
+origin = "new"
+
+[mods."0021-dg-machines"]
+origin = "new"
+
+[mods."0022-fx-ram"]
+origin = "new"
+
+[mods."0023-isr-meter"]
+origin = "new"
+
+[mods."0024-lean"]
+origin = "new"
+
+[mods."0025-perf-push"]
+origin = "new"
+
+[mods."0026-cache"]
+origin = "new"
+
+[mods."0027-sample-skip"]
+origin = "new"
+
+[mods."0028-live-slot"]
+origin = "new"

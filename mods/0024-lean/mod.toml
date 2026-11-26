@@ -1,0 +1,53 @@
+[mod]
+id      = "0024-lean"
+title   = "Lean interrupt: parameter smoothing at half rate; performance locks and CV modulation out"
+
+enabled = true
+
+# re-only | built | hardware-verified | retracted
+status  = "built"
+
+summary = """
+Audio interrupt time back for effects and machines. Two parts, each a param.
+
+half: the parameter smoothing (the one-pole glide of all 572 words of the
+engine's working array, 0x40120cba) and the per-track interpolation (13 x 21
+msac passes, 0x40120e0c) run every other block. On the blocks between, the
+working array is restored from a copy taken after them on the last computing
+block (and before CTRL IN, the routes, the performance locks and the LFOs, which
+modify it in place and would otherwise add twice). The glide's coefficients are
+squared to keep its time: 0.03 / 0.97 a block becomes 0.0591 / 0.9409 every
+other block, so knobs still settle in about 22 ms; parameters now step every
+1.33 ms instead of 0.67 ms. Discrete words the loop at 0x40120ce8 copies in
+take effect up to two blocks later. The copy, 1144 B, is in four code caves
+(cave6, cave7, cave5, cave11), the only free memory inside the data cache's
+window (ACR0: 0x40000000..0x47ffffff). The first version kept it in 0022's
+SDRAM at 0x4B680000, which is uncached: on the unit (meter, 2026-11-13) its
+restore cost about 2.5% of a block and its copy about 1.2%, nearly all of the
+gain.
+
+cut: performance mode's 48 locks and CONTROL IN 1/2 MOD are no longer applied:
+adc_pedal_update is not called and the code from 0x40120f08 to 0x40120fa6 (the
+two CTRL IN route calls and the performance locks) is jumped over. PERF and the
+CONTROL INPUT / CONTROL IN MOD pages stay in the menus and do nothing. 0020's CV
+trig reads the converter itself and keeps working. Velocity and aftertouch
+routes are untouched.
+"""
+
+[sources]
+stub = "stub.s"
+
+[params]
+# 1 runs the smoothing and the interpolation every other block. Off: measured on
+# the unit (2026-11-13, builds 17 and 20) the working array's copy costs about
+# 2.7% of a block to restore and 2.0% to take wherever it lives outside on-chip
+# SRAM (the rest of the interrupt evicts it from the cache), so the average gain
+# was nil and every computing block about 2% heavier. Needs the copy in SRAM, or
+# a design without a copy, before it is worth turning on.
+half = 0
+# 1 drops performance locks and CV modulation from the interrupt.
+cut = 1
+
+[requires]
+shared = false
+symbols = []
